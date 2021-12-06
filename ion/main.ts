@@ -42,11 +42,10 @@ class Ion {
               outgoing: true,
               incoming: false,
               func: (event: NewMessageEvent) => {
-                const reg = new RegExp(`^${prefix}${name}`)
+                const reg = new RegExp(`^${prefix}${name}\s?(.*)`)
                 const match = event.message.message.match(reg)
 
-                console.log('match', match)
-
+                if (!match) return false
                 return true
               },
             })

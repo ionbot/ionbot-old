@@ -1,6 +1,7 @@
-import { Ion } from './main'
-import express, { Request, Response } from 'express'
+import 'dotenv/config'
 import next from 'next'
+import express, { Request, Response } from 'express'
+import { Ion } from './main'
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
