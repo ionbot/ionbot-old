@@ -1,7 +1,5 @@
+import { User } from '.prisma/client'
+
 export interface Config {
-  app?: {
-    id: number
-    hash: string
-    session: string
-  }
+  app?: User
 }

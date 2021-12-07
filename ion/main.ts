@@ -5,6 +5,7 @@ import { NewMessage, NewMessageEvent } from 'telegram/events'
 
 import config, { prefix } from '../lib/config'
 import { Module } from './handlers/module'
+import { setup } from '../lib/setup'
 
 const modules = readdirSync(__dirname + '/modules')
 
@@ -13,14 +14,21 @@ class Ion {
   client?: TelegramClient
 
   constructor() {
-    if (this.config.app) {
-      const { id, hash, session } = this.config.app
+    this.init()
+  }
+
+  async init() {
+    const { app } = await this.config()
+    if (app) {
+      const { apiId, apiHash, session } = app
       const sessionString = new StringSession(session)
-      this.client = new TelegramClient(sessionString, id, hash, {
+      this.client = new TelegramClient(sessionString, apiId, apiHash, {
         connectionRetries: 5,
       })
 
       this.start()
+    } else {
+      setup().then(this.init)
     }
   }
 

@@ -1,9 +1,19 @@
 import inquirer from 'inquirer'
-import { writeFileSync } from 'fs'
 import { TelegramClient } from 'telegram'
 import { StringSession } from 'telegram/sessions'
+import { prisma } from './prisma'
 
-const install = async () => {
+const getUser = async () => {
+  const user = await prisma.user.findFirst()
+  return user
+}
+
+const setup = async () => {
+  const user = await getUser()
+  if (user) {
+    return
+  }
+
   const stringSession = new StringSession('')
 
   const questions = [
@@ -68,15 +78,16 @@ const install = async () => {
     onError: (err) => console.log(err),
   })
 
-  // save config to current woring directory
-  const config = {
-    app: {
-      id: apiId,
-      hash: apiHash,
-      session: client.session.save(),
+  const self: any = await client.getMe()
+
+  await prisma.user.create({
+    data: {
+      apiId,
+      apiHash,
+      session: String(client.session.save()),
+      firstName: self['firstName'],
     },
-  }
-  writeFileSync(process.cwd() + '/config.json', JSON.stringify(config, null, 2))
+  })
 }
 
-export { install }
+export { setup }

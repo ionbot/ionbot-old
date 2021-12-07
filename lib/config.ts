@@ -1,11 +1,16 @@
-import { readFileSync } from 'fs'
-import { Config } from '../types'
+import { User } from '.prisma/client'
+import { prisma } from './prisma'
 
-let config: Config = {}
+const config = async () => {
+  let app: User | null = null
 
-try {
-  config = JSON.parse(readFileSync('./config.json', 'utf8'))
-} catch (e) {}
+  const user = await prisma.user.findFirst()
+  if (user) {
+    app = user
+  }
+
+  return { app }
+}
 
 export default config
 
