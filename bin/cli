@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+require('dotenv/config');
+
 const { version } = require('../package.json');
 const { program } = require('commander');
 
@@ -8,6 +12,12 @@ program.parse(process.argv);
 
 const options = program.opts();
 
+if (process.env.NODE_ENV === 'development') {
+	console.log('development mode');
+	process.exit(0);
+}
+
 if (options.install) {
-	require('./install');
+	const { install } = require('../dist/lib/install');
+	install();
 }
